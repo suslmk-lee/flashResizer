@@ -1,0 +1,11 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "lib": ["ES2020"],
+    "types": ["@cloudflare/workers-types"],
+    "jsx": "react-jsx",
+    "allowImportingTsExtensions": false,
+    "noEmit": true
+  },
+  "include": ["functions"]
+}
