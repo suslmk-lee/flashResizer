@@ -22,7 +22,7 @@ export default function Header() {
           <a href="#" className="hover:text-white transition-colors">
             Documentation
           </a>
-          <a href="#" className="hover:text-white transition-colors flex items-center gap-1">
+          <a href="https://github.com/suslmk-lee/flashResizer" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors flex items-center gap-1">
             GitHub
             <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path

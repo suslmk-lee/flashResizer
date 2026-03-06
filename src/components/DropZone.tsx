@@ -1,4 +1,4 @@
-import { useCallback, useRef, type DragEvent } from 'react';
+import { useCallback, useRef, useState, type DragEvent } from 'react';
 
 interface Props {
   onFiles: (files: File[]) => void;
@@ -9,6 +9,8 @@ const MAX_SIZE = 10 * 1024 * 1024;
 
 export default function DropZone({ onFiles }: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const dragCounter = useRef(0); // children의 dragenter/leave 중첩 방지
 
   const handleFiles = useCallback(
     (fileList: FileList | null) => {
@@ -21,18 +23,40 @@ export default function DropZone({ onFiles }: Props) {
     [onFiles]
   );
 
+  const onDragEnter = (e: DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    dragCounter.current++;
+    setIsDragging(true);
+  };
+
+  const onDragLeave = (e: DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    dragCounter.current--;
+    if (dragCounter.current === 0) setIsDragging(false);
+  };
+
+  const onDragOver = (e: DragEvent<HTMLDivElement>) => e.preventDefault();
+
   const onDrop = (e: DragEvent<HTMLDivElement>) => {
     e.preventDefault();
+    dragCounter.current = 0;
+    setIsDragging(false);
     handleFiles(e.dataTransfer.files);
   };
 
   return (
     <div
+      onDragEnter={onDragEnter}
+      onDragLeave={onDragLeave}
+      onDragOver={onDragOver}
       onDrop={onDrop}
-      onDragOver={(e) => e.preventDefault()}
       onClick={() => inputRef.current?.click()}
-      className="border-2 border-dashed border-blue-900/50 rounded-2xl flex flex-col items-center justify-center py-16 px-8 cursor-pointer transition-colors hover:border-blue-700/60"
-      style={{ background: 'rgba(15, 25, 41, 0.4)' }}
+      className="border-2 border-dashed rounded-2xl flex flex-col items-center justify-center py-16 px-8 cursor-pointer transition-all duration-200"
+      style={{
+        borderColor: isDragging ? '#3b82f6' : 'rgba(30, 58, 138, 0.5)',
+        background: isDragging ? 'rgba(59, 130, 246, 0.08)' : 'rgba(15, 25, 41, 0.4)',
+        transform: isDragging ? 'scale(1.01)' : 'scale(1)',
+      }}
     >
       <input
         ref={inputRef}
@@ -43,18 +67,38 @@ export default function DropZone({ onFiles }: Props) {
         onChange={(e) => handleFiles(e.target.files)}
       />
 
-      <div className="w-16 h-16 rounded-full bg-blue-600/20 flex items-center justify-center mb-5">
-        <svg className="w-8 h-8 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={1.5}
-            d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
-          />
+      <div
+        className="w-16 h-16 rounded-full flex items-center justify-center mb-5 transition-colors duration-200"
+        style={{ background: isDragging ? 'rgba(59, 130, 246, 0.3)' : 'rgba(59, 130, 246, 0.2)' }}
+      >
+        <svg
+          className="w-8 h-8 transition-colors duration-200"
+          style={{ color: isDragging ? '#60a5fa' : '#3b82f6' }}
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          {isDragging ? (
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={1.5}
+              d="M19 14l-7 7m0 0l-7-7m7 7V3"
+            />
+          ) : (
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={1.5}
+              d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+            />
+          )}
         </svg>
       </div>
 
-      <p className="text-white font-semibold text-lg mb-1.5">Drag and drop images here</p>
+      <p className="font-semibold text-lg mb-1.5 transition-colors duration-200" style={{ color: isDragging ? '#93c5fd' : 'white' }}>
+        {isDragging ? 'Release to upload' : 'Drag and drop images here'}
+      </p>
       <p className="text-gray-500 text-sm mb-7">Support for JPG, PNG, WebP, and AVIF up to 10MB</p>
 
       <button
