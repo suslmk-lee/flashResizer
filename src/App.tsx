@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react';
+import { useLang } from './i18n';
 import Header from './components/Header';
 import DropZone from './components/DropZone';
 import ProcessingList from './components/ProcessingList';
@@ -117,14 +118,15 @@ export default function App() {
     }
   };
 
+  const { t } = useLang();
   const pendingCount = files.length;
 
   return (
     <div className="min-h-screen flex flex-col" style={{ background: '#0b1120' }}>
       <Header />
-      <main className="flex-1 flex overflow-hidden">
+      <main className="flex-1 flex flex-col lg:flex-row overflow-y-auto lg:overflow-hidden">
         {/* Left content */}
-        <div className="flex-1 p-6 space-y-6 overflow-y-auto min-w-0">
+        <div className="flex-1 p-4 lg:p-6 space-y-4 lg:space-y-6 lg:overflow-y-auto min-w-0">
           <DropZone onFiles={addFiles} />
           {files.length > 0 && (
             <ProcessingList files={files} config={config} onRemove={removeFile} />
@@ -142,10 +144,10 @@ export default function App() {
       </main>
 
       <footer
-        className="px-6 py-3 border-t border-white/5 text-xs text-gray-600"
+        className="px-4 lg:px-6 py-3 border-t border-white/5 text-xs text-gray-600 text-center lg:text-left"
         style={{ background: '#0f1929' }}
       >
-        &copy; 2024 FlashResizer Inc. All rights reserved.
+        {t.footer}
       </footer>
     </div>
   );

@@ -1,4 +1,5 @@
 import type { ProcessingFile, TransformConfig } from '../types';
+import { useLang } from '../i18n';
 
 interface Props {
   files: ProcessingFile[];
@@ -20,14 +21,15 @@ function FileRow({
   config: TransformConfig;
   onRemove: () => void;
 }) {
+  const { t } = useLang();
   const ext = config.format === 'jpg' ? 'jpg' : config.format;
   const baseName = item.file.name.replace(/\.[^/.]+$/, '');
   const outputName = `${baseName}.${ext}`;
 
   return (
-    <div className="flex items-center gap-4 p-4 rounded-xl" style={{ background: '#0f1929' }}>
+    <div className="flex items-center gap-3 lg:gap-4 p-3 lg:p-4 rounded-xl" style={{ background: '#0f1929' }}>
       {/* Thumbnail */}
-      <div className="w-14 h-14 rounded-lg overflow-hidden flex-shrink-0 bg-gray-800">
+      <div className="w-12 h-12 lg:w-14 lg:h-14 rounded-lg overflow-hidden flex-shrink-0 bg-gray-800">
         <img src={item.thumbnail} alt="" className="w-full h-full object-cover" />
       </div>
 
@@ -62,12 +64,12 @@ function FileRow({
           }`}
         >
           {item.status === 'done'
-            ? 'READY TO DOWNLOAD'
+            ? t.readyToDownload
             : item.status === 'error'
               ? (item.error ?? 'ERROR').toUpperCase()
               : item.status === 'processing'
-                ? 'PROCESSING...'
-                : 'PENDING'}
+                ? t.processing
+                : t.pending}
         </span>
       </div>
 
@@ -116,15 +118,16 @@ function FileRow({
 }
 
 export default function ProcessingList({ files, config, onRemove }: Props) {
+  const { t } = useLang();
   return (
     <div>
       <div className="flex items-center justify-between mb-3">
-        <h2 className="text-white font-semibold">Active Processing</h2>
+        <h2 className="text-white font-semibold">{t.activeProcessing}</h2>
         <span
           className="px-2.5 py-0.5 rounded-full text-xs font-medium text-white"
           style={{ background: '#1a2640' }}
         >
-          {files.length} items
+          {files.length} {t.items}
         </span>
       </div>
       <div className="space-y-3">

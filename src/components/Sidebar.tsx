@@ -1,4 +1,5 @@
 import type { TransformConfig, OutputFormat } from '../types';
+import { useLang } from '../i18n';
 
 interface Props {
   config: TransformConfig;
@@ -17,6 +18,7 @@ const FORMATS: { value: OutputFormat; label: string }[] = [
 ];
 
 export default function Sidebar({ config, onChange, onProcessAll, onReset, pendingCount }: Props) {
+  const { t } = useLang();
   const update = (patch: Partial<TransformConfig>) => onChange({ ...config, ...patch });
 
   const handleWidth = (value: number) => {
@@ -37,26 +39,26 @@ export default function Sidebar({ config, onChange, onProcessAll, onReset, pendi
 
   return (
     <aside
-      className="w-72 flex-shrink-0 flex flex-col border-l border-white/5"
+      className="w-full lg:w-72 flex-shrink-0 flex flex-col border-t lg:border-t-0 lg:border-l border-white/5"
       style={{ background: '#0f1929' }}
     >
       {/* Header */}
       <div className="flex items-center justify-between px-6 py-5 border-b border-white/5">
-        <h2 className="text-white font-semibold">Configuration</h2>
+        <h2 className="text-white font-semibold">{t.configuration}</h2>
         <button
           onClick={onReset}
           className="text-blue-400 hover:text-blue-300 text-sm transition-colors"
         >
-          Reset
+          {t.reset}
         </button>
       </div>
 
       {/* Scrollable content */}
-      <div className="flex-1 overflow-y-auto px-6 py-6 space-y-8">
+      <div className="flex-1 lg:overflow-y-auto px-4 lg:px-6 py-5 lg:py-6 grid grid-cols-1 lg:grid-cols-1 gap-6 lg:gap-8 content-start">
         {/* Dimensions */}
         <div>
           <div className="flex items-center justify-between mb-5">
-            <span className="text-white text-sm font-medium">Dimensions</span>
+            <span className="text-white text-sm font-medium">{t.dimensions}</span>
             <button
               className="flex items-center gap-1.5 text-xs text-blue-400 hover:text-blue-300 transition-colors"
               onClick={() => update({ lockAspect: !config.lockAspect })}
@@ -78,14 +80,14 @@ export default function Sidebar({ config, onChange, onProcessAll, onReset, pendi
                   />
                 )}
               </svg>
-              Lock Aspect Ratio
+              {t.lockAspectRatio}
             </button>
           </div>
 
           <div className="space-y-5">
             <div>
               <div className="flex justify-between mb-2">
-                <span className="text-gray-500 text-xs">Width</span>
+                <span className="text-gray-500 text-xs">{t.width}</span>
                 <span className="text-blue-400 text-xs font-medium">{config.width}px</span>
               </div>
               <input
@@ -100,7 +102,7 @@ export default function Sidebar({ config, onChange, onProcessAll, onReset, pendi
             </div>
             <div>
               <div className="flex justify-between mb-2">
-                <span className="text-gray-500 text-xs">Height</span>
+                <span className="text-gray-500 text-xs">{t.height}</span>
                 <span className="text-blue-400 text-xs font-medium">{config.height}px</span>
               </div>
               <input
@@ -118,7 +120,7 @@ export default function Sidebar({ config, onChange, onProcessAll, onReset, pendi
 
         {/* Output Format */}
         <div>
-          <h3 className="text-white text-sm font-medium mb-3">Output Format</h3>
+          <h3 className="text-white text-sm font-medium mb-3">{t.outputFormat}</h3>
           <div className="grid grid-cols-2 gap-2">
             {FORMATS.map((f) => (
               <button
@@ -140,7 +142,7 @@ export default function Sidebar({ config, onChange, onProcessAll, onReset, pendi
         {/* Quality */}
         <div>
           <div className="flex justify-between mb-3">
-            <h3 className="text-white text-sm font-medium">Quality</h3>
+            <h3 className="text-white text-sm font-medium">{t.quality}</h3>
             <span className="text-blue-400 text-sm font-medium">{config.quality}%</span>
           </div>
           <input
@@ -175,7 +177,7 @@ export default function Sidebar({ config, onChange, onProcessAll, onReset, pendi
               d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
             />
           </svg>
-          Process All
+          {t.processAll}
         </button>
 
         <div className="flex gap-4">

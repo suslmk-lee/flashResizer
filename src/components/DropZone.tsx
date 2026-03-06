@@ -1,4 +1,5 @@
 import { useCallback, useRef, useState, type DragEvent } from 'react';
+import { useLang } from '../i18n';
 
 interface Props {
   onFiles: (files: File[]) => void;
@@ -8,6 +9,7 @@ const ACCEPTED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/avif'];
 const MAX_SIZE = 10 * 1024 * 1024;
 
 export default function DropZone({ onFiles }: Props) {
+  const { t } = useLang();
   const inputRef = useRef<HTMLInputElement>(null);
   const [isDragging, setIsDragging] = useState(false);
   const dragCounter = useRef(0); // children의 dragenter/leave 중첩 방지
@@ -51,7 +53,7 @@ export default function DropZone({ onFiles }: Props) {
       onDragOver={onDragOver}
       onDrop={onDrop}
       onClick={() => inputRef.current?.click()}
-      className="border-2 border-dashed rounded-2xl flex flex-col items-center justify-center py-16 px-8 cursor-pointer transition-all duration-200"
+      className="border-2 border-dashed rounded-2xl flex flex-col items-center justify-center py-10 px-6 lg:py-16 lg:px-8 cursor-pointer transition-all duration-200"
       style={{
         borderColor: isDragging ? '#3b82f6' : 'rgba(30, 58, 138, 0.5)',
         background: isDragging ? 'rgba(59, 130, 246, 0.08)' : 'rgba(15, 25, 41, 0.4)',
@@ -97,9 +99,9 @@ export default function DropZone({ onFiles }: Props) {
       </div>
 
       <p className="font-semibold text-lg mb-1.5 transition-colors duration-200" style={{ color: isDragging ? '#93c5fd' : 'white' }}>
-        {isDragging ? 'Release to upload' : 'Drag and drop images here'}
+        {isDragging ? t.releaseToUpload : t.dragDrop}
       </p>
-      <p className="text-gray-500 text-sm mb-7">Support for JPG, PNG, WebP, and AVIF up to 10MB</p>
+      <p className="text-gray-500 text-sm mb-7">{t.supportedFormats}</p>
 
       <button
         className="px-7 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-medium rounded-full transition-colors text-sm"
@@ -108,7 +110,7 @@ export default function DropZone({ onFiles }: Props) {
           inputRef.current?.click();
         }}
       >
-        Select Files
+        {t.selectFiles}
       </button>
     </div>
   );
